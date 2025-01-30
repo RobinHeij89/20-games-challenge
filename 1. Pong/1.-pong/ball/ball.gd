@@ -17,14 +17,22 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var collision = move_and_collide(current_vel * delta)
 	if collision:
-		var random_x = randi() % 10 - 5
+		var random_x = randi() % 10
 		var random_y = randi() % 10 - 5
 		var extra = Vector2(random_x*10, random_y*10)
 		var collider = collision.get_collider()
+		var new_velo = Vector2.ZERO
 		if collider is StaticBody2D and collider is not CPUPad:
-			current_vel = Vector2(current_vel.x, -current_vel.y) + extra
+			new_velo.x = current_vel.x + extra.x
+			new_velo.y = -(current_vel.y + extra.y)
+			current_vel = new_velo
 		else:
-			current_vel = Vector2(-current_vel.x, current_vel.y) + extra
+			if current_vel.x > 0 :
+				new_velo.x = -(current_vel.x + extra.x)
+			else:
+				new_velo.x = -(current_vel.x - extra.x)
+			new_velo.y = current_vel.y + extra.y
+			current_vel = new_velo
 	detect_point()
 
 func detect_point():
